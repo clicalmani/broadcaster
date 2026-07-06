@@ -15,8 +15,8 @@ class BroadcastTokenGenerator
         $key = InMemory::plainText($this->secretKey);
 
         return (new Builder())
-            ->withClaim('mercure', ['subscribe' => $topics]) // Les canaux autorisés
-            ->withGradualTTL(new \DateInterval('PT1H'))      // Expire après 1h
+            ->withClaim('mercure', ['subscribe' => $topics]) // The authorized channels
+            ->withGradualTTL(new \DateInterval('PT1H'))      // Expires after 1 hour
             ->getToken($signer, $key)
             ->toString();
     }

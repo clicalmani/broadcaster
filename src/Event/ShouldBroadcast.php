@@ -4,13 +4,13 @@ namespace Broadcaster\Event;
 interface ShouldBroadcast
 {
     /**
-     * Les canaux (topics) sur lesquels diffuser l'événement
+     * The channels (topics) on which to broadcast the event.
      * @return string[]
      */
     public function broadcastOn(): array;
 
     /**
-     * Les données à envoyer au client
+     * The data to be sent to the client.
      * @return array
      */
     public function broadcastWith(): array;

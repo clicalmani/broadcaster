@@ -4,8 +4,10 @@ namespace Broadcaster;
 use Broadcaster\Drivers\BroadcasterInterface;
 use Broadcaster\Drivers\MercureBroadcaster;
 use Broadcaster\Drivers\LogBroadcaster;
+use Clicalmani\Foundation\Support\Facades\Tonka;
 use Symfony\Component\Mercure\Hub;
-use Symfony\Component\Mercure\Jwt\StaticJwtProvider;
+use Symfony\Component\Mercure\Jwt\StaticTokenProvider;
+use Lcobucci\JWT\Configuration as JwtConfig;
 
 class BroadcastManager
 {
@@ -33,21 +35,41 @@ class BroadcastManager
         $connections = $this->config['connections'] ?? [];
         
         if (!isset($connections[$name])) {
-            throw new \InvalidArgumentException("Le broadcaster [{$name}] n'est pas configuré.");
+            throw new \InvalidArgumentException("The broadcaster [{$name}] is not configured.");
         }
 
         $connectionConfig = $connections[$name];
-
+        
         return match ($connectionConfig['driver']) {
             'mercure' => new MercureBroadcaster(
-                new Hub($connectionConfig['url'], new StaticJwtProvider($connectionConfig['token'])),
+                new Hub(
+                    $connectionConfig['url'], 
+                    new StaticTokenProvider($this->resolveMercureToken($connectionConfig))
+                ),
                 $connectionConfig
             ),
-            'log' => new LogBroadcaster(container()->get('logger')), // Ajuste selon le nom de ton service de log
+            'log' => new LogBroadcaster(container()->get('logger')),
             'null' => new class implements BroadcasterInterface { 
                 public function broadcast(\Clicalmani\Task\Event\ShouldBroadcastInterface $event): void {} 
             },
-            default => throw new \InvalidArgumentException("Driver [{$connectionConfig['driver']}] non supporté.")
+            default => throw new \InvalidArgumentException("Driver [{$connectionConfig['driver']}] is not supported.")
         };
+    }
+
+    private function resolveMercureToken(array $config): string
+    {
+        // If a real token is explicitly provided in the .env, use it directly
+        if (!empty($config['token'])) {
+            return $config['token'];
+        }
+
+        /** @var JwtConfig $jwtConfig */
+        $jwtConfig = container()->get('mercure.jwt.config');
+
+        $token = $jwtConfig->builder()
+                    ->withClaim('mercure', ['publish' => ['*']])
+                    ->getToken($jwtConfig->signer(), $jwtConfig->signingKey());
+        
+        return $token->toString();
     }
 }

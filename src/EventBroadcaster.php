@@ -12,10 +12,10 @@ class EventBroadcaster
 
     public function broadcast(ShouldBroadcastInterface $event): void
     {
-        // 1. Déterminer le nom de l'événement (ex: "OrderShipped")
+        // 1. Determine the event name (e.g., "OrderShipped")
         $eventName = (new \ReflectionClass($event))->getShortName();
 
-        // 2. Préparer les données (payload)
+        // 2. Prepare the payload data
         $data = method_exists($event, 'broadcastWith') 
             ? $event->broadcastWith() 
             : $this->extractPublicProperties($event);
@@ -25,9 +25,9 @@ class EventBroadcaster
             'data'  => $data
         ]);
 
-        // 3. Diffuser sur chaque canal défini
+        // 3. Broadcast to each defined channel
         foreach ($event->broadcastOn() as $channel) {
-            // L'URL de topic Mercure devient : https://tonka.framework/channels/{channel}
+            // The Mercure topic URL becomes: https://tonka.framework/channels/{channel}
             $topic = 'https://tonka.framework/channels/' . $channel;
             
             $update = new Update($topic, $payload);
