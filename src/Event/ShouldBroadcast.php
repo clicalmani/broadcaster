@@ -1,5 +1,5 @@
 <?php
-namespace Broadcaster;
+namespace Broadcaster\Event;
 
 interface ShouldBroadcast
 {
