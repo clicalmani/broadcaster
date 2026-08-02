@@ -1,6 +1,7 @@
 <?php
 namespace Broadcaster;
 
+use Clicalmani\Foundation\Support\Facades\DB;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
@@ -13,7 +14,9 @@ class EventBroadcaster
     public function broadcast(ShouldBroadcastInterface $event): void
     {
         // 1. Determine the event name (e.g., "OrderShipped")
-        $eventName = (new \ReflectionClass($event))->getShortName();
+        $eventName = method_exists($event, 'broadcastAs') 
+            ? $event->broadcastAs() 
+            : (new \ReflectionClass($event))->getShortName();
 
         // 2. Prepare the payload data
         $data = method_exists($event, 'broadcastWith') 
@@ -27,12 +30,21 @@ class EventBroadcaster
 
         // 3. Broadcast to each defined channel
         foreach ($event->broadcastOn() as $channel) {
-            // The Mercure topic URL becomes: https://tonka.framework/channels/{channel}
-            $topic = 'https://tonka.framework/channels/' . $channel;
-            
-            $update = new Update($topic, $payload);
-            
-            $this->hub->publish($update);
+            // Verify if event logic is present
+            if (method_exists($event, 'broadcastWhen') && !$event->broadcastWhen()) continue;
+
+            $broadcast = function() use ($payload, $channel) {
+                // The Mercure topic URL becomes: https://tonka.framework/channels/{channel}
+                $topic = 'https://tonka.framework/channels/' . $channel;
+                $update = new Update($topic, $payload);
+                $this->hub->publish($update);
+            };
+
+            // Transactional events should be broadcasted after the transaction is committed
+            if ($event instanceof ShouldDispatchAfterCommitInterface) {
+                // Here you would typically register a callback to be executed after the transaction commits.
+                \Clicalmani\Foundation\Support\Facades\DB::deadlock($broadcast, $event->attempts(), $event->sleep());
+            } else $broadcast(); // Broadcast immediatly
         }
     }
 

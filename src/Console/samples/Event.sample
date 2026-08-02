@@ -1,0 +1,24 @@
+<?php
+namespace App\Broadcasting;
+
+use Override;
+use Broadcaster\Event\ShouldBroadcastInterface;
+
+class $class implements ShouldBroadcastInterface
+{
+    public function __construct() {}
+
+    #[Override]
+    public function broadcastOn(): array
+    {
+        return [
+            // Broadcasting global and private canals
+        ];
+    }
+
+    #[Override]
+    public function broadcastWith(): array
+    {
+        return ['Welcome to tonka!'];
+    }
+}

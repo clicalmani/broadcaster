@@ -8,10 +8,4 @@ interface ShouldBroadcastInterface
      * @return string[]
      */
     public function broadcastOn(): array;
-
-    /**
-     * The data to be sent to the client.
-     * @return array
-     */
-    public function broadcastWith(): array;
 }
