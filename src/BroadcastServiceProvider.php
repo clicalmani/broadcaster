@@ -13,12 +13,12 @@ class BroadcastServiceProvider implements ServiceProviderInterface
         $configFile = config_path('/broadcasting.php');
         $config = file_exists($configFile) ? require $configFile : ['default' => 'null', 'connections' => []];
         
-        app()->addService(BroadcastManager::class, [
+        app()->addService(BroadcastManager::class, 
             BroadcastManager::class,
             static function($serviceConfig) use($config) {
                 $serviceConfig->args([$config]);
             }
-        ]);
+        );
 
         foreach ([
             Console\MakeEvent::class
