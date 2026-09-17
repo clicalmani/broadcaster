@@ -1,7 +1,7 @@
 <?php
 namespace Broadcaster;
 
-use Clicalmani\Foundation\Support\Facades\DB;
+use Clicalmani\Core\Support\Facades\DB;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
@@ -43,7 +43,7 @@ class EventBroadcaster
             // Transactional events should be broadcasted after the transaction is committed
             if ($event instanceof ShouldDispatchAfterCommitInterface) {
                 // Here you would typically register a callback to be executed after the transaction commits.
-                \Clicalmani\Foundation\Support\Facades\DB::deadlock($broadcast, $event->attempts(), $event->sleep());
+                \Clicalmani\Core\Support\Facades\DB::deadlock($broadcast, $event->attempts(), $event->sleep());
             } else $broadcast(); // Broadcast immediatly
         }
     }

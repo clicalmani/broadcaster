@@ -2,7 +2,7 @@
 namespace Broadcaster;
 
 use Clicalmani\Container\Application;
-use Clicalmani\Foundation\Providers\ServiceProviderInterface;
+use Clicalmani\Core\Providers\ServiceProviderInterface;
 use Broadcaster\Event\ShouldBroadcastInterface;
 use Broadcaster\BroadcastManager;
 

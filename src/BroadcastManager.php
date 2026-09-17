@@ -4,7 +4,7 @@ namespace Broadcaster;
 use Broadcaster\Drivers\BroadcasterInterface;
 use Broadcaster\Drivers\MercureBroadcaster;
 use Broadcaster\Drivers\LogBroadcaster;
-use Clicalmani\Foundation\Support\Facades\Tonka;
+use Clicalmani\Core\Support\Facades\Tonka;
 use Symfony\Component\Mercure\Hub;
 use Symfony\Component\Mercure\Jwt\StaticTokenProvider;
 use Lcobucci\JWT\Configuration as JwtConfig;
