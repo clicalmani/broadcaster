@@ -1,7 +1,8 @@
 <?php
 namespace Broadcaster;
 
-use Clicalmani\Core\Support\Facades\DB;
+use Broadcaster\Event\ShouldBroadcastInterface;
+use Broadcaster\Event\ShouldDispatchAfterCommitInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 

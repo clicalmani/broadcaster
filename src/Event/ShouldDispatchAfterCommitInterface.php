@@ -16,7 +16,7 @@ interface ShouldDispatchAfterCommitInterface
      * 
      * @return int
      */
-    public function attemps(): int;
+    public function attempts(): int;
 
     /**
      * Get the delay (in milliseconds) between retry attempts.

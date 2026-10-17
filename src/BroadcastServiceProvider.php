@@ -31,10 +31,14 @@ class BroadcastServiceProvider implements ServiceProviderInterface
         }
     }
 
-    public function boot(): void
+    public function boot(
+        ?\Clicalmani\Core\Acme\Container $container = null
+    ): void
     {
         if ( is_file(config_path('/broadcasting.php')) ) {
             app()->config->set('broadcasting', require_once config_path('/broadcasting.php'));
         }
+
+        require_once __DIR__ . '/helpers.php';
     }
 }

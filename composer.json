@@ -4,13 +4,37 @@
     "type": "library",
     "require": {
         "php": ">=8.0",
-        "symfony/mercure": "^0.7.2"
+        "symfony/mercure": "^0.7.2",
+        "lcobucci/jwt": "^5.0"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "Broadcaster\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Broadcaster\\Test\\": "tests/"
+        }
+    },
+    "repositories": [
+        { "type": "path", "url": "../foundation" },
+        { "type": "path", "url": "../routing" },
+        { "type": "path", "url": "../console" },
+        { "type": "path", "url": "../psr" },
+        { "type": "path", "url": "../validation" }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "clicalmani/foundation": "@dev",
+        "clicalmani/routing": "@dev",
+        "clicalmani/console": "@dev",
+        "clicalmani/psr": "@dev",
+        "clicalmani/validation": "@dev"
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "authors": [
         {
